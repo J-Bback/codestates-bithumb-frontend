@@ -197,8 +197,8 @@ const SocketTest = () => {
           <div style={styles.graph}>
             <p>{priceFormat(dataF["ETH_KRW"].closePrice)}</p>
           </div>
-          <div style={styles.graph, { color: dataF["BTC_KRW"].chgAmt > 0 ? '#f75467' : '#4386f9' }}>
-            <p>{priceFormat(dataF["BTC_KRW"].chgAmt)}</p>
+          <div style={styles.graph, { color: dataF["ETH_KRW"].chgAmt > 0 ? '#f75467' : '#4386f9' }}>
+            <p>{priceFormat(dataF["ETH_KRW"].chgAmt)}</p>
             <p>{dataF["ETH_KRW"].chgRate}%</p>
           </div>
           <div style={styles.graph}>
