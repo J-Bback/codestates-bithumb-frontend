@@ -9,8 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-decorators": "^7.17.8",
     "@types/sass": "^1.43.1",
     "@types/sass-loader": "^8.0.3",
+    "mobx": "^6.5.0",
+    "mobx-react": "^7.3.0",
     "next": "12.1.4",
     "node-sass": "^7.0.1",
     "react": "18.0.0",
