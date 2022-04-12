@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 type DataProps = {
 	method: string;
@@ -18,7 +19,7 @@ export const CallApi = async (data: DataProps) => {
 		method: data.method,
 		header: {
 			"Content-Type": "application/json",
-			"Accept-Encoding": "gzip",
+			Accept: "application/json",
 		},
 	};
 

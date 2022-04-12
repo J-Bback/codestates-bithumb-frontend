@@ -4,8 +4,7 @@ import { Context } from "vm";
 // import DataStore from '../stores/DataStore';
 import { CallApi } from "../utils/callApi";
 
-type DataProps = {};
-export const Exchange = (props: DataProps) => {
+export const Exchange = (props: any) => {
 	const [data, setData] = useState();
 
 	useEffect(() => {
@@ -13,10 +12,13 @@ export const Exchange = (props: DataProps) => {
 	}, [data]);
 
 	const getData = async () => {
+		console.log("props", props);
 		try {
+			const orderCurrency = "ALL";
+			const paymentCurrency = "KRW";
 			const data = {
 				method: "GET",
-				url: "https://api.upbit.com/v1/ticker?markets=KRW-BTC",
+				url: `https://api.bithumb.com/public/ticker/${orderCurrency}_${paymentCurrency}`,
 			};
 
 			const response: any = await CallApi(data);
@@ -29,7 +31,7 @@ export const Exchange = (props: DataProps) => {
 		}
 	};
 
-	return <div>거래소 데이터 받아오기 webSocket</div>;
+	return <div>거래소 데이터 뷰</div>;
 };
 
 // export const getServerSideProps: GetServerSideProps = async (

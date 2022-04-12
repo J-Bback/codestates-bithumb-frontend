@@ -14,13 +14,14 @@
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@types/sass": "^1.43.1",
     "@types/sass-loader": "^8.0.3",
+    "axios": "^0.26.1",
     "mobx": "^6.5.0",
     "mobx-react": "^7.3.0",
     "next": "12.1.4",
     "node-sass": "^7.0.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "sass": "^1.49.11"
+    "sass": "^1.50.0"
   },
   "devDependencies": {
     "@types/node": "17.0.23",

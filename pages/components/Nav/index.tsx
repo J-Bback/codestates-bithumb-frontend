@@ -46,7 +46,7 @@ const Nav = (props: Props) => {
 
 	return (
 		<nav className={styles.nav}>
-			<div style={{ fontSize: "24px" }}>K D F A R M</div>
+			<div style={{ fontSize: "24px" }}>코드스테이츠X빗썸</div>
 			{renderItems()}
 			<div style={{ fontSize: "24px" }}>Connect Wallet</div>
 		</nav>

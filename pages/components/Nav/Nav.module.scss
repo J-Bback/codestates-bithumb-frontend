@@ -14,12 +14,13 @@
   font-size: 16px;
   background-color: $sub-color;
   color: $white;
-  // @include align-items(center);
+  @include align-items(center);
 }
 
 .itemWrap {
   display: flex;
   flex-direction: "row";
+  @include justify-content(space-around);
 
   .activeItem {
     cursor: pointer;

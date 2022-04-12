@@ -10,8 +10,8 @@ const Home = (props: any) => {
 	return (
 		<div className={styles.container}>
 			<Head>
-				<title>KDFarm</title>
-				<meta name="defi" content="DeFi Platform" />
+				<title>CodeStates X Bithumb</title>
+				<meta name="Bithumb" content="Exchange" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
