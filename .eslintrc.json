@@ -1,3 +1,58 @@
+// {
+//   "extends": "next/core-web-vitals"
+// }
+
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true,
+    "jest": true
+  },
+  "globals": {
+    "catchAsync": "writable",
+    "MESSAGE": "readonly",
+    "ALERT_MESSAGE": "readonly"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true,
+      "legacyDecorators": true
+    },
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "ignorePatterns": [".eslintrc.js"],
+  "plugins": [
+    "@typescript-eslint",
+    "react"
+  ],
+  "rules": {
+    "react/prop-types": 0,
+    "no-extra-boolean-cast": 0,
+    "no-unused-vars": 0,
+    "react/no-string-refs": 0,
+    "react/jsx-no-target-blank": 0,
+    "react/display-name": "off",
+    "no-fallthrough": 0,
+    "import/extensions": [
+      "off"
+    ], // tsx import extention
+    "no-case-declarations": 0,
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }
