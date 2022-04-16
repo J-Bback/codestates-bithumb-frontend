@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { UseWindowSize } from '../components/UseWindowSize';
+import React, { useState, useEffect, useRef, createRef } from 'react';
+import { UseWindowSize } from './hooks/UseWindowSize';
+import { FetchWrapperArg } from '../../interface/fetchFactory';
 // import DataStore from '../stores/DataStore';
-import ExchangeData from './ExchangeData';
 import { CallApi } from '../utils/callApi';
+import ExchangeData from './ExchangeData';
+import { CandleChart } from '../components/CandleChart';
+// import { Chartings } from '../components/Charting';
+
 import styles from './Exchange.module.scss';
 
 interface Size {
@@ -12,19 +16,24 @@ interface Size {
 
 export const Exchange = (props: any) => {
   const [data, setData] = useState<ExchangeData>();
-  // const [ coordinates, setCoordinates, canvasRef, canvasWidth, canvasHeight ] =
   const size: Size = UseWindowSize();
   const innerWidth = typeof size.width === 'number' && size.width < 1000 ? size.width - 20 : 1000;
   const innerHeight = typeof size.width === 'number' && size.width < 1000 ? size.width * 0.4 - 8 : 400;
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const ctx: CanvasRenderingContext2D | null = canvas.current ? canvas.current.getContext('2d') : null;
-  ctx?.lineWidth ? (ctx.lineWidth = 10) : null;
-  ctx?.strokeRect(10, 10, innerWidth - 20, innerHeight - 20);
-  ctx?.strokeStyle ? (ctx.strokeStyle = '#3369ff') : null;
-  ctx?.fillRect(innerWidth / 2, innerHeight / 2 - 60, 80, 120);
-  ctx?.fillStyle ? (ctx.fillStyle = '#3369ff') : null;
 
+  // const canvas = useRef<HTMLCanvasElement>(null);
+  // const ctx: CanvasRenderingContext2D | null = canvas.current ? canvas.current.getContext('2d') : null;
+  // let canvasWidth = ctx?.canvas.width;
+  // let canvasHeight = ctx?.canvas.height;
+  // canvasWidth = 1000;
+  // canvasHeight = 450;
+
+  // ctx?.lineWidth ? (ctx.lineWidth = 10) : null;
+  // ctx?.strokeRect(10, 10, innerWidth - 20, innerHeight - 20);
+  // ctx?.strokeStyle ? (ctx.strokeStyle = '#3369ff') : null;
+  // ctx?.fillRect(innerWidth / 2, innerHeight / 2 - 60, 80, 120);
+  // ctx?.fillStyle ? (ctx.fillStyle = '#3369ff') : null;
   useEffect(() => {
+    console.log('props', props);
     setTimeout(() => {
       getData();
       console.log('getData', data);
@@ -50,30 +59,33 @@ export const Exchange = (props: any) => {
     }
   };
 
-  const handleCanvasClick = (event: any) => {
-    // const currentCoord = { x: event.clientX, y: event.clientY };
-    if (typeof ctx?.canvas.offsetLeft === 'number') {
-      const x = event.clientX - ctx?.canvas.offsetLeft;
-      const y = event.clientY - ctx?.canvas.offsetTop;
-
-      ctx.fillRect(x - 15, y - 15, 30, 30);
-    }
-  };
-
   return (
-    // ㅊㅏ트 만들기
-    <section>
-      <div>비트코인 BTC / KRW</div>
-      <div>
-        {size.width}px / {size.height}px
-      </div>
-      <canvas
-        ref={canvas}
-        className={styles.canvas}
-        width={innerWidth}
-        height={innerHeight}
-        onClick={handleCanvasClick}
-      />
-    </section>
+    <main className={styles.exchange_wrap}>
+      <section className={styles.side_bar_wrap}>사이드바 width 360 ma - r 40px;</section>
+      <section className={styles.ticker_wrap}>
+        <div className={styles.title_wrap}>
+          <div>비트코인 BTC / KRW</div>
+          <div>오토 트레이딩 버튼</div>
+        </div>
+        <div className={styles.header_bar_wrap}>헤더바</div>
+        {/* 차트 그리기 */}
+        <CandleChart data={data} />
+        {/* <Chartings /> */}
+      </section>
+    </main>
   );
+};
+
+Exchange.getInitialProps = async (ctx: FetchWrapperArg) => {
+  const orderCurrency = 'BTC';
+  const paymentCurrency = 'KRW';
+  console.log('fwaoiefjelwakfj');
+  const data = {
+    method: 'GET',
+    url: `https://api.bithumb.com/public/ticker/${orderCurrency}_${paymentCurrency}`,
+  };
+  const res = await fetch(data.url);
+  const resJson = await res.json();
+  console.log('resJson', resJson);
+  return { props: resJson };
 };

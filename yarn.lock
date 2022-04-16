@@ -934,6 +934,24 @@ charcodes@^0.2.0:
   resolved "https://registry.npmjs.org/charcodes/-/charcodes-0.2.0.tgz"
   integrity sha512-Y4kiDb+AM4Ecy58YkuZrrSRJBDQdQ2L+NyS1vHHFtNtUjgutcZfx3yp1dAONI/oPaPmyGfCLx5CxL+zauIMyKQ==
 
+chart-library@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/chart-library/-/chart-library-1.2.1.tgz#f7bbaf8833a4df13abb41404cb4cb4ca2fb7aea8"
+  integrity sha512-sEuQE1vOhNg8uXxeKnn/bTUXokv51azR0ryD7lXncaCJ+10+cOUOTkBSrXojr8LEGGgXnYBhrTj//ki27VG5KA==
+  dependencies:
+    gauges-library latest
+    mindfusion-common latest
+
+chart.js@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.7.1.tgz#0516f690c6a8680c6c707e31a4c1807a6f400ada"
+  integrity sha512-8knRegQLFnPQAheZV8MjxIXc5gQEfDFD897BJgv/klO/vtIyFFmgMXrNfgrXpbTr/XbTturxRgxIXx/Y+ASJBA==
+
+chartjs-adapter-luxon@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/chartjs-adapter-luxon/-/chartjs-adapter-luxon-1.1.0.tgz#0a0d9213db5de0ad3285fae896b4c4b74db9007b"
+  integrity sha512-CS+xBWEyXYVLBZ3dSY/MwlSXhz8er4JjkApazY84ft/++oOLsmkt6TaXBCsUFudum7QdoYmpxiL/gSp20+emkw==
+
 "chokidar@>=3.0.0 <4.0.0":
   version "3.5.3"
   resolved "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz"
@@ -1617,6 +1635,13 @@ gauge@^4.0.0:
     strip-ansi "^6.0.1"
     wide-align "^1.1.5"
 
+gauges-library@latest:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/gauges-library/-/gauges-library-1.1.1.tgz#35a1828b1182d9599852eb7e006ad218aa6d726a"
+  integrity sha512-l+bno6v/UilVqSOHEsJxD6MAhEJZcH/LdKx+uWjeyzbASYnaL4LS98Ka+BysxxvE/mDV9nW6Gq5GFJbEmn4Gag==
+  dependencies:
+    mindfusion-common latest
+
 gaze@^1.0.0:
   version "1.1.3"
   resolved "https://registry.npmjs.org/gaze/-/gaze-1.1.3.tgz"
@@ -2294,6 +2319,11 @@ min-indent@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/min-indent/-/min-indent-1.0.1.tgz"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
+
+mindfusion-common@latest:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/mindfusion-common/-/mindfusion-common-1.2.6.tgz#70543afff2f92eb70f41422628dfa0d52182c907"
+  integrity sha512-+A6HhDDHRssSVMqfP38nXW7g62h6M2H4cdu4+V/7exYAaeKAdKNLc2mZhDKuOvGK7SZbT3id4e78GiNPO9IBCg==
 
 minimatch@^3.0.4, minimatch@^3.1.2:
   version "3.1.2"
