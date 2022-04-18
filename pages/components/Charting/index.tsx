@@ -8,7 +8,6 @@
 //   const [mockData, setMockData] = useState();
 
 //   useEffect(() => {
-//     console.log('window', window);
 //     const candleChart: any = new Charting.Controls.CandlestickChart(chartRef.current);
 //     candleChart.title = 'BitCotes 빗코츠';
 //     candleChart.theme.titleFontSize = 16;
@@ -46,17 +45,16 @@
 //     const dataList: any = new Charting.Collections.List();
 //     console.log('DATALIST', dataList);
 
-//     // const setTime = setInterval(() => {
-//     //   updateChart;
-//     // }, 1000);
-//     setChart(candleChart);
-//     setMockData(dataList);
-//     // setIntervalId(setTime);
+//     const setTime = setInterval(() => {
+//       setMockData(dataList);
+//       setChart(candleChart);
+//       setIntervalId(setTime);
+//     }, 1000);
 
-//     // return () => clearInterval(intervalId);
+//     return () => clearInterval(intervalId);
 //   }, []);
 
-//   const updateChart = () => {};
+//   // const updateChart = () => {};
 
 //   return (
 //     <div>
