@@ -15,6 +15,7 @@
   background-color: $sub-color;
   color: $white;
   @include align-items(center);
+  z-index: 999;
 }
 
 .itemWrap {

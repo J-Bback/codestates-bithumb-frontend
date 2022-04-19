@@ -35,3 +35,18 @@
 .canvas {
   background-color: blue;
 }
+
+.input_style {
+  width: 100%;
+  height: 40px;
+  padding: 0 10px 0 40px;
+  border: 1px solid #eeeeee;
+  border-radius: 3px;
+  color: #282828;
+  &:disabled {
+    background: #f1f1f1;
+  }
+  &::placeholder {
+    color: #777777;
+  }  
+}

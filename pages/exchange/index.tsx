@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
+import { useRouter } from 'next/router';
 import { UseWindowSize } from './hooks/UseWindowSize';
 import { FetchWrapperArg } from '../../interface/fetchFactory';
 // import DataStore from '../stores/DataStore';
 import { CallApi } from '../utils/callApi';
 import ExchangeData from './ExchangeData';
 import { ApexChart } from '../components/ApexChart';
+import Input from '../../atoms/Input';
+import Tab from '../components/Tab';
+
 import styles from './Exchange.module.scss';
 
 interface Size {
@@ -16,7 +20,10 @@ interface Size {
 export const Exchange = (props: any) => {
   const [data, setData] = useState<any>();
   const [series, setSeries] = useState<any>([]);
-  const [recentData, setRecentData] = useState<any>([]);
+  // const [recentData, setRecentData] = useState<any>([]);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const router = useRouter();
+  const { query } = router;
 
   const size: Size = UseWindowSize();
   const innerWidth = typeof size.width === 'number' && size.width < 1000 ? size.width - 20 : 1000;
@@ -33,12 +40,9 @@ export const Exchange = (props: any) => {
     }, 1000);
   }, [series]);
 
-  // useEffect(() => {
-  //   // console.log('recentData', recentData ?? null);
-  //   setSeries((prev: any[]) => {
-  //     return [...prev];
-  //   });
-  // }, []);
+  useEffect(() => {
+    router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
+  }, []);
 
   const getData = async () => {
     try {
@@ -59,20 +63,53 @@ export const Exchange = (props: any) => {
         const lastData: any[] = responseJson.data[len];
         const tenthData: any = cloneData.splice(-10, 10);
         tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
-        // if (series === undefined || !series || series === []) {
         setSeries(seriesData);
-        // }
-        // console.log('ten', tenthData);
-        // setRecentData([{ x: lastData[0], y: [lastData[1], lastData[3], lastData[4], lastData[2]] }]);
       }
     } catch (e) {
       console.log(e);
     }
   };
 
+  const handleChange = (value: string) => {
+    setSearchValue(value);
+  };
+
+  const search = () => {};
+  const moveTab = (tab: string) => {
+    router.push({ query: { tab } }, undefined, { shallow: true });
+  };
+
   return (
     <main className={styles.exchange_wrap}>
-      <section className={styles.side_bar_wrap}>사이드바 width 360 ma - r 40px;</section>
+      <section className={styles.side_bar_wrap}>
+        <Input
+          type="text"
+          placeholder="검색"
+          className={styles.input_style}
+          maxLength={12}
+          handleChange={(value: string) => handleChange(value)}
+          propValue={searchValue}
+          clearButton="on"
+        />
+        <Tab
+          tabs={{
+            tabItems: [
+              { key: 'krw', label: '원화 마켓', onClick: () => moveTab('krw') },
+              { key: 'favorites', label: '즐겨 찾기', onClick: () => moveTab('favorites') },
+            ],
+            selectedTab: query.tab,
+          }}
+          contentsStyle={{ width: '360px' }}
+        />
+        <table>
+          <thead>
+            <tr>테이블 헤더</tr>
+          </thead>
+          <tbody>테이블 바디바디</tbody>
+        </table>
+        {/* {query.tab && ( */}
+        {/* )} */}
+      </section>
       <section className={styles.ticker_wrap}>
         <div className={styles.title_wrap}>
           <div>비트코인 BTC / KRW</div>
