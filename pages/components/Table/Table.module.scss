@@ -1,0 +1,41 @@
+@import '../../../styles/variables.scss';
+
+.table_scroll_style {
+  border: 1px solid #eeeeee;
+  border-radius: 3px;
+  thead {
+    th {
+      font-size: 12px;
+      font-weight: 700;
+      height: '32px';
+      align-items: center;
+      // border-top: 1px solid $gray-2;
+      
+      border-left: none;
+      border-right: none;
+    }
+  }
+  tbody {
+    th,
+    td {
+      font-size: 12px;
+      font-weight: 400;
+      border-left: none;
+      border-right: none;
+    }
+    tr:nth-child(even) {
+      background: rgba(56, 136, 230, 0.1);
+    }
+  }
+  tbody {
+    display: block;
+    max-height: 975px;
+    overflow-y: scroll;
+  }
+  thead,
+  tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+}

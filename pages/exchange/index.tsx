@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useRouter } from 'next/router';
+
 import { UseWindowSize } from './hooks/UseWindowSize';
 import { FetchWrapperArg } from '../../interface/fetchFactory';
 // import DataStore from '../stores/DataStore';
 import { CallApi } from '../utils/callApi';
+import costComma from '../../helpers/costComma';
+import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
+
 import ExchangeData from './ExchangeData';
 import { ApexChart } from '../components/ApexChart';
 import Input from '../../atoms/Input';
+import Nav from '../components/Nav';
 import Tab from '../components/Tab';
+import Table from '../components/Table';
 
 import styles from './Exchange.module.scss';
 
@@ -17,11 +23,13 @@ interface Size {
   height: number | undefined;
 }
 
-export const Exchange = (props: any) => {
-  const [data, setData] = useState<any>();
+const Exchange = (props: any) => {
+  const [navigation, setNavigation] = useState('exchange');
   const [series, setSeries] = useState<any>([]);
+  const [currencyList, setCurrencyList] = useState<any>({});
   // const [recentData, setRecentData] = useState<any>([]);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('');
   const router = useRouter();
   const { query } = router;
 
@@ -34,11 +42,18 @@ export const Exchange = (props: any) => {
   // let canvasHeight = ctx?.canvas.height;
   // ctx?.lineWidth ? (ctx.lineWidth = 10) : null;
   // ctx?.fillRect(innerWidth / 2, innerHeight / 2 - 60, 80, 120);
+
   useEffect(() => {
     setTimeout(() => {
       getData();
     }, 1000);
   }, [series]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      getTicker();
+    }, 1000);
+  }, [currencyList]);
 
   useEffect(() => {
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
@@ -70,58 +85,138 @@ export const Exchange = (props: any) => {
     }
   };
 
+  const getTicker = async () => {
+    try {
+      const orderCurrency = 'ALL';
+      const paymentCurrency = 'KRW';
+      const data = {
+        method: 'GET',
+        url: `https://api.bithumb.com/public/ticker/${orderCurrency}_${paymentCurrency}`,
+      };
+
+      const response: any = await CallApi(data);
+      const responseJson: any = await response.json();
+      if (response.status === 200) {
+        if (searchValue) {
+          const filter = Object.keys(responseJson.data);
+        }
+        setCurrencyList(responseJson.data);
+        // const seriesData: any[] = [];
+        // const tenthData: any = cloneData.splice(-10, 10);
+        // tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
+        // setSeries(seriesData);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleChange = (value: string) => {
     setSearchValue(value);
   };
 
-  const search = () => {};
   const moveTab = (tab: string) => {
     router.push({ query: { tab } }, undefined, { shallow: true });
   };
 
-  return (
-    <main className={styles.exchange_wrap}>
-      <section className={styles.side_bar_wrap}>
-        <Input
-          type="text"
-          placeholder="검색"
-          className={styles.input_style}
-          maxLength={12}
-          handleChange={(value: string) => handleChange(value)}
-          propValue={searchValue}
-          clearButton="on"
-        />
-        <Tab
-          tabs={{
-            tabItems: [
-              { key: 'krw', label: '원화 마켓', onClick: () => moveTab('krw') },
-              { key: 'favorites', label: '즐겨 찾기', onClick: () => moveTab('favorites') },
-            ],
-            selectedTab: query.tab,
+  const tbodyData = () => {
+    let keys = Object.keys(currencyList);
+    if (searchValue) {
+      keys = keys.filter((v) => v.includes(searchValue.toUpperCase()));
+    }
+    // const sorted = keys.map((v) => currencyList[v].acc_trade_value_24H).sort((a, b) => a - b);
+    return keys.map((name, i) => {
+      const currentPrice = currencyList[name].closing_price;
+      const fluctate = currencyList[name].fluctate_24H;
+      const fluctateRate = currencyList[name].fluctate_rate_24H;
+      const accTradeValue = currencyList[name].acc_trade_value_24H;
+      if (name === 'date') {
+        return;
+      }
+      return (
+        <tr
+          key={i}
+          style={{
+            cursor: 'pointer',
+            textAlign: 'center',
+            height: '50px',
+            wordBreak: 'break-all',
+            alignItems: 'center',
           }}
-          contentsStyle={{ width: '360px' }}
-        />
-        <table>
-          <thead>
-            <tr>테이블 헤더</tr>
-          </thead>
-          <tbody>테이블 바디바디</tbody>
-        </table>
-        {/* {query.tab && ( */}
-        {/* )} */}
-      </section>
-      <section className={styles.ticker_wrap}>
-        <div className={styles.title_wrap}>
-          <div>비트코인 BTC / KRW</div>
-          <div>오토 트레이딩 버튼</div>
-        </div>
-        <div className={styles.header_bar_wrap}>헤더바</div>
-        {/* 차트 그리기 */}
-        <ApexChart data={data !== undefined && data} series={series} />
-      </section>
-    </main>
+          onClick={() => name !== selectedCurrency && setSelectedCurrency(name)}>
+          <td>{`${name} / KRW`}</td>
+          <td>{costComma(currentPrice)}</td>
+          <td
+            style={
+              Math.sign(Number(fluctateRate)) === 1
+                ? { color: '#F75467' }
+                : Math.sign(Number(fluctateRate)) === 0
+                ? { color: '#282828' }
+                : { color: '#4386F9' }
+            }>
+            <span>{`${signRatePositive(Number(fluctateRate))} %`}</span>
+            <br />
+            <span>{signPricePositive(Number(fluctate))}</span>
+          </td>
+          <td>{`${costComma(Math.round(Number(accTradeValue) / 1000000))} 백만`}</td>
+        </tr>
+      );
+    });
+    // console.log('currencyList', currencyList);
+  };
+
+  return (
+    <>
+      <Nav setItem={(key: string) => setNavigation(key)} default={'exchange'} />
+      <main className={styles.exchange_wrap}>
+        <section className={styles.side_bar_wrap}>
+          <Input
+            type="text"
+            placeholder="검색"
+            className={styles.input_style}
+            maxLength={12}
+            handleChange={(value: string) => handleChange(value)}
+            propValue={searchValue}
+            clearButton="on"
+          />
+          <Tab
+            tabs={{
+              tabItems: [
+                { key: 'krw', label: '원화 마켓', onClick: () => moveTab('krw') },
+                { key: 'favorites', label: '즐겨 찾기', onClick: () => moveTab('favorites') },
+              ],
+              selectedTab: query.tab,
+            }}
+            contentsStyle={{ width: '360px' }}
+          />
+          <Table
+            theadWidth={[30, 22, 20, 28]}
+            theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
+            tbodyData={tbodyData()}
+            emptyTable={{
+              text: '검색된 가상자산이 없습니다',
+              style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+            }}
+            tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px' }}
+            tbodyStyle={{ height: '975px', overflowY: 'auto' }}
+          />
+          {/* {query.tab && ( */}
+          {/* )} */}
+        </section>
+        <section className={styles.ticker_wrap}>
+          <div className={styles.title_wrap}>
+            <div>비트코인 BTC / KRW</div>
+            <div>오토 트레이딩 버튼</div>
+          </div>
+          <div className={styles.header_bar_wrap}>헤더바</div>
+          {/* 차트 그리기 */}
+          <ApexChart series={series} />
+        </section>
+      </main>
+    </>
   );
 };
+export default Exchange;
 
 Exchange.getInitialProps = async (ctx: FetchWrapperArg) => {
   const orderCurrency = 'BTC';

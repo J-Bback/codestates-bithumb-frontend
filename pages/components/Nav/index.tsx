@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styles from './Nav.module.scss';
 
@@ -8,10 +9,12 @@ type Items = {
 
 interface Props {
   setItem: any;
+  default: string;
 }
 
 const Nav = (props: Props) => {
-  const [selected, setSelected] = useState('home');
+  const router = useRouter();
+  const [selected, setSelected] = useState(props.default);
   const items = [
     { key: 'home', label: 'Home' },
     { key: 'exchange', label: 'Exchange' },
@@ -39,6 +42,18 @@ const Nav = (props: Props) => {
     if (key !== selected) {
       setSelected(key);
       props.setItem(key);
+      if (key === 'exchange') {
+        router.push(
+          {
+            pathname: '/exchange',
+            query: { tab: 'krw' },
+          },
+          undefined,
+          { shallow: true }
+        );
+        return;
+      }
+      router.push({ pathname: `/${key}` }, undefined, { shallow: true });
     }
   };
 
