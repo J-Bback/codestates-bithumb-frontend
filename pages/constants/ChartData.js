@@ -38,8 +38,8 @@ export const candleStickOptionsData = {
   plotOptions: {
     candlestick: {
       colors: {
-        upward: '#F75467',
-        downward: '#4386F9',
+        upward: '#D13C4B',
+        downward: '#1F5ED2',
       },
     },
   },

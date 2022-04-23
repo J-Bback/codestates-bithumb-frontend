@@ -17,7 +17,7 @@
   }
   .selected_tab {
     @include center_mid();
-    background-color: #3369FF;
+    background-color: $sub-color;
     color: #ffffff;
     font-weight: bold;
     width: 100%;

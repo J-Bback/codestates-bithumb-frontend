@@ -76,7 +76,7 @@ const Exchange = (props: any) => {
         const seriesData: any[] = [];
         const len: number = responseJson.data.length;
         const lastData: any[] = responseJson.data[len];
-        const tenthData: any = cloneData.splice(-30, 30);
+        const tenthData: any = cloneData.splice(-50, 50);
         tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
         setSeries(seriesData);
       }
