@@ -29,7 +29,7 @@ const Exchange = (props: any) => {
   const [currencyList, setCurrencyList] = useState<any>({});
   // const [recentData, setRecentData] = useState<any>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('BTC');
   const router = useRouter();
   const { query } = router;
 
@@ -61,9 +61,9 @@ const Exchange = (props: any) => {
 
   const getData = async () => {
     try {
-      const orderCurrency = 'BTC';
+      const orderCurrency = selectedCurrency;
       const paymentCurrency = 'KRW';
-      const chartIntervals = '1m';
+      const chartIntervals = '1h';
       const data = {
         method: 'GET',
         url: `https://api.bithumb.com/public/candlestick/${orderCurrency}_${paymentCurrency}/${chartIntervals}`,
@@ -76,7 +76,7 @@ const Exchange = (props: any) => {
         const seriesData: any[] = [];
         const len: number = responseJson.data.length;
         const lastData: any[] = responseJson.data[len];
-        const tenthData: any = cloneData.splice(-10, 10);
+        const tenthData: any = cloneData.splice(-30, 30);
         tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
         setSeries(seriesData);
       }
@@ -97,9 +97,9 @@ const Exchange = (props: any) => {
       const response: any = await CallApi(data);
       const responseJson: any = await response.json();
       if (response.status === 200) {
-        if (searchValue) {
-          const filter = Object.keys(responseJson.data);
-        }
+        // if (searchValue) {
+        //   const filter = Object.keys(responseJson.data);
+        // }
         setCurrencyList(responseJson.data);
         // const seriesData: any[] = [];
         // const tenthData: any = cloneData.splice(-10, 10);
@@ -109,6 +109,16 @@ const Exchange = (props: any) => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const getCurrentPrice = () => {
+    return costComma(currencyList[selectedCurrency]?.closing_price);
+    //   const fluctateRate = currencyList[name].fluctate_rate_24H;
+    //   const accTradeValue = currencyList[name].acc_trade_value_24H;
+  };
+
+  const getCurrentFluctateRate = () => {
+    return costComma(currencyList[selectedCurrency]?.fluctate_rate_24H);
   };
 
   const handleChange = (value: string) => {
@@ -165,6 +175,31 @@ const Exchange = (props: any) => {
     // console.log('currencyList', currencyList);
   };
 
+  const renderTitle = () => {
+    return (
+      <div className={styles.title_wrap}>
+        <div className={styles.title}>코인이름</div>
+        <div>{selectedCurrency} / KRW</div>
+      </div>
+    );
+  };
+
+  const renderChartHeader = () => {
+    return (
+      <div className={styles.header_bar_wrap}>
+        <div>{'자산'}</div>
+        <div>
+          <span>{`${selectedCurrency} 사용가능 0.00000000 / 사용중 0.00000000 `}</span>
+          <span className={styles.address_link_style}>{` ${selectedCurrency} 입금`}</span>
+        </div>
+        <div>
+          <span>{`KRW 사용가능 0 / 사용중 0 `}</span>
+          <span className={styles.address_link_style}>{` KRW 입금`}</span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Nav setItem={(key: string) => setNavigation(key)} default={'exchange'} />
@@ -200,17 +235,25 @@ const Exchange = (props: any) => {
             tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px' }}
             tbodyStyle={{ height: '975px', overflowY: 'auto' }}
           />
-          {/* {query.tab && ( */}
-          {/* )} */}
         </section>
         <section className={styles.ticker_wrap}>
-          <div className={styles.title_wrap}>
-            <div>비트코인 BTC / KRW</div>
-            <div>오토 트레이딩 버튼</div>
-          </div>
-          <div className={styles.header_bar_wrap}>헤더바</div>
-          {/* 차트 그리기 */}
+          {renderTitle()}
+          {renderChartHeader()}
           <ApexChart series={series} />
+          <div className={styles.transaction_and_order_wrap}>
+            <div>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div>{getCurrentPrice()}</div>
+                <div>{getCurrentFluctateRate()}</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div>거래량~</div>
+              </div>
+              <div>차트</div>
+              <div>체결내역</div>
+            </div>
+            <div>ㅁㅐ수/매도 호가창</div>
+          </div>
         </section>
       </main>
     </>

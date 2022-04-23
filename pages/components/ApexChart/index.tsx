@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { candleStickOptionsData } from '../../constants/ChartData';
 import { barOptionsData } from '../../constants/ChartData';
+import styles from './ApexChart.module.scss';
 const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });
 
 export const ApexChart = (props: any) => {
@@ -11,7 +12,7 @@ export const ApexChart = (props: any) => {
   const [barOptions, setBarOptions] = useState<any>(barOptionsData);
 
   return (
-    <div>
+    <div className={styles.contents_wrap}>
       <ReactApexChart
         options={options}
         series={[{ data: props?.series }]}

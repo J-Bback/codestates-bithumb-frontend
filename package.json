@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "proxy": "https://api.bithumb.com",
   "dependencies": {
     "@babel/core": "^7.17.8",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
