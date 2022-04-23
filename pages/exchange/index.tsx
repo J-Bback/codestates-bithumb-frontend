@@ -10,11 +10,11 @@ import costComma from '../../helpers/costComma';
 import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
 
 import ExchangeData from './ExchangeData';
-import { ApexChart } from '../components/ApexChart';
+import { ApexChart } from '../../components/ApexChart';
 import Input from '../../atoms/Input';
-import Nav from '../components/Nav';
-import Tab from '../components/Tab';
-import Table from '../components/Table';
+import Nav from '../../components/Nav';
+import Tab from '../../components/Tab';
+import Table from '../../components/Table';
 
 import styles from './Exchange.module.scss';
 

@@ -1,5 +1,5 @@
-@import '../../../styles/mixin.scss';
-@import '../../../styles/variables.scss';
+@import '../../styles/mixin.scss';
+@import '../../styles/variables.scss';
 
 .tab_wrap {
   @include justify-content('space-between');
