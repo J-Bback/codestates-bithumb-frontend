@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, createRef } from 'react';
+import React, { useState, useEffect, useRef, createRef, useContext } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useRouter } from 'next/router';
 
+import Image from 'next/image';
 import { UseWindowSize } from './hooks/UseWindowSize';
 import { FetchWrapperArg } from '../../interface/fetchFactory';
 // import DataStore from '../stores/DataStore';
@@ -17,6 +18,8 @@ import Tab from '../../components/Tab';
 import Table from '../../components/Table';
 
 import styles from './Exchange.module.scss';
+import { IMainContext } from '../../interface/Interface';
+import { MainContext } from '../../context/Context';
 
 interface Size {
   width: number | undefined;
@@ -24,12 +27,16 @@ interface Size {
 }
 
 const Exchange = (props: any) => {
+  const context = useContext<IMainContext>(MainContext);
   const [navigation, setNavigation] = useState('exchange');
   const [series, setSeries] = useState<any>([]);
   const [currencyList, setCurrencyList] = useState<any>({});
   // const [recentData, setRecentData] = useState<any>([]);
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('BTC');
+  const [chartList, setChartList] = useState<any>(['1분', '10분', '30분', '1시간']);
+  const [chartSelect, setChartSelect] = useState<string>('1분');
+  const [favorites, setFavorites] = useState<any[]>([]);
   const router = useRouter();
   const { query } = router;
 
@@ -58,6 +65,10 @@ const Exchange = (props: any) => {
   useEffect(() => {
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
+
+  useEffect(() => {
+    // console.log(context.favorites);
+  }, [favorites]);
 
   const getData = async () => {
     try {
@@ -129,6 +140,35 @@ const Exchange = (props: any) => {
     router.push({ query: { tab } }, undefined, { shallow: true });
   };
 
+  const onAddFavorites = (i: number, e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    let temp: any = [...favorites];
+    if (temp.length !== 0) {
+      let exist = false;
+      for (let k in temp) {
+        if (temp[k] === i) {
+          exist = true;
+          if (exist) {
+            temp.splice(k, 1);
+          }
+        }
+      }
+      if (exist) {
+        setFavorites(temp);
+        context.handleStateChange('favorites', temp);
+      }
+      if (!exist) {
+        setFavorites((prev: any) => {
+          return [...prev, i];
+        });
+        context.handleStateChange('favorites', [...favorites, i]);
+      }
+    } else {
+      setFavorites([i]);
+      context.handleStateChange('favorites', [i]);
+    }
+  };
+
   const tbodyData = () => {
     let keys = Object.keys(currencyList);
     if (searchValue) {
@@ -152,8 +192,22 @@ const Exchange = (props: any) => {
             height: '50px',
             wordBreak: 'break-all',
             alignItems: 'center',
+            borderLeft: name === selectedCurrency ? '2px solid #979797' : '',
           }}
-          onClick={() => name !== selectedCurrency && setSelectedCurrency(name)}>
+          onClick={() => {
+            name !== selectedCurrency && setSelectedCurrency(name);
+          }}>
+          <td style={{ width: '8%' }}>
+            <div
+              onClick={(e: any) => {
+                onAddFavorites(i, e);
+              }}>
+              {!favorites.includes(i) && (
+                <Image src="/images/star_empty.png" alt="Close Button" width={14} height={14} />
+              )}
+              {favorites.includes(i) && <Image src="/images/star.png" alt="Close Button" width={14} height={14} />}
+            </div>
+          </td>
           <td>{`${name} / KRW`}</td>
           <td>{costComma(currentPrice)}</td>
           <td
@@ -179,7 +233,7 @@ const Exchange = (props: any) => {
     return (
       <div className={styles.title_wrap}>
         <div className={styles.title}>코인이름</div>
-        <div>{selectedCurrency} / KRW</div>
+        <div style={{ color: '#979797', marginBottom: 4 }}>{selectedCurrency} / KRW</div>
       </div>
     );
   };
@@ -187,14 +241,20 @@ const Exchange = (props: any) => {
   const renderChartHeader = () => {
     return (
       <div className={styles.header_bar_wrap}>
-        <div>{'자산'}</div>
+        <div className={styles.property}>{'자산'}</div>
         <div>
-          <span>{`${selectedCurrency} 사용가능 0.00000000 / 사용중 0.00000000 `}</span>
+          <span className={styles.property}>
+            {`${selectedCurrency}`} <span>사용가능</span> <span className={styles.color_b}>0.00000000</span> /{' '}
+            <span>사용중</span> <span className={styles.color_b}>0.00000000 </span>
+          </span>
           <span className={styles.address_link_style}>{` ${selectedCurrency} 입금`}</span>
         </div>
         <div>
-          <span>{`KRW 사용가능 0 / 사용중 0 `}</span>
-          <span className={styles.address_link_style}>{` KRW 입금`}</span>
+          <span className={styles.property}>
+            {`${selectedCurrency}`} <span>사용가능</span> <span className={styles.color_b}>0.00000000</span> /{' '}
+            <span>사용중</span> <span className={styles.color_b}>0.00000000 </span>
+          </span>
+          <span className={styles.address_link_style}>{`KRW 입금`}</span>
         </div>
       </div>
     );
@@ -204,57 +264,70 @@ const Exchange = (props: any) => {
     <>
       <Nav setItem={(key: string) => setNavigation(key)} default={'exchange'} />
       <main className={styles.exchange_wrap}>
-        <section className={styles.side_bar_wrap}>
-          <Input
-            type="text"
-            placeholder="검색"
-            className={styles.input_style}
-            maxLength={12}
-            handleChange={(value: string) => handleChange(value)}
-            propValue={searchValue}
-            clearButton="on"
-          />
-          <Tab
-            tabs={{
-              tabItems: [
-                { key: 'krw', label: '원화 마켓', onClick: () => moveTab('krw') },
-                { key: 'favorites', label: '즐겨 찾기', onClick: () => moveTab('favorites') },
-              ],
-              selectedTab: query.tab,
-            }}
-            contentsStyle={{ width: '360px' }}
-          />
-          <Table
-            theadWidth={[30, 22, 20, 28]}
-            theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
-            tbodyData={tbodyData()}
-            emptyTable={{
-              text: '검색된 가상자산이 없습니다',
-              style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
-            }}
-            tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px' }}
-            tbodyStyle={{ height: '975px', overflowY: 'auto' }}
-          />
-        </section>
-        <section className={styles.ticker_wrap}>
-          {renderTitle()}
-          {renderChartHeader()}
-          <ApexChart series={series} />
-          <div className={styles.transaction_and_order_wrap}>
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <div>{getCurrentPrice()}</div>
-                <div>{getCurrentFluctateRate()}</div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <div>거래량~</div>
-              </div>
-              <div>차트</div>
-              <div>체결내역</div>
+        <div className={styles.container}>
+          <section className={styles.side_bar_wrap}>
+            <Input
+              type="text"
+              placeholder="검색"
+              className={styles.input_style}
+              maxLength={12}
+              handleChange={(value: string) => handleChange(value)}
+              propValue={searchValue}
+              clearButton="on"
+            />
+            <Tab
+              tabs={{
+                tabItems: [
+                  { key: 'krw', label: '원화마켓', onClick: () => moveTab('krw') },
+                  { key: 'favorites', label: '즐겨찾기', onClick: () => moveTab('favorites') },
+                ],
+                selectedTab: query.tab,
+              }}
+              contentsStyle={{ width: '340px', borderLeft: '1px solid #eeeeee', borderRight: '1px solid #eeeeee' }}
+            />
+            <Table
+              theadWidth={[8, 23, 23, 23, 23]}
+              theadData={['', '자산', '현재가', '변동률(당일)', '거래금액(24H)']}
+              tbodyData={tbodyData()}
+              emptyTable={{
+                text: '검색된 가상자산이 없습니다',
+                style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+              }}
+              tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px', color: '#232323' }}
+              tbodyStyle={{ height: '975px', overflowY: 'auto' }}
+            />
+          </section>
+          <section className={styles.ticker_wrap}>
+            {renderTitle()}
+            {renderChartHeader()}
+
+            <div className={styles.chart_select_bar}>
+              {chartList.map((el: string, i: number) => (
+                <div
+                  key={i}
+                  onClick={() => setChartSelect(el)}
+                  className={el === chartSelect ? styles.chart_selected : styles.chart_unselected}>
+                  {el}
+                </div>
+              ))}
             </div>
-            <div>ㅁㅐ수/매도 호가창</div>
-          </div>
-        </section>
+            <ApexChart series={series} />
+            <div className={styles.transaction_and_order_wrap}>
+              <div>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div>{getCurrentPrice()}</div>
+                  <div>{getCurrentFluctateRate()}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div>거래량~</div>
+                </div>
+                <div>차트</div>
+                <div>체결내역</div>
+              </div>
+              <div>ㅁㅐ수/매도 호가창</div>
+            </div>
+          </section>
+        </div>
       </main>
     </>
   );

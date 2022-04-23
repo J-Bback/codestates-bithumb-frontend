@@ -23,7 +23,7 @@ const Table = (props: PropsType) => {
 
       if (typeof data === 'string') {
         returnTh = (
-          <th key={i} width={`${theadWidth[i]}%`}>
+          <th style={{ padding: '5px 0', borderBottom: '1px solid #eeeeee' }} key={i} width={`${theadWidth[i]}%`}>
             {data}
           </th>
         );

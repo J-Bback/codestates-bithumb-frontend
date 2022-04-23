@@ -17,11 +17,11 @@ export const ApexChart = (props: any) => {
         options={options}
         series={[{ data: props?.series }]}
         type="candlestick"
-        width={1000}
+        width={900}
         height={290}
       />
       <div>
-        <ReactApexChart options={barOptions} series={[{ data: props?.series }]} type="bar" width={1000} height={160} />
+        <ReactApexChart options={barOptions} series={[{ data: props?.series }]} type="bar" width={900} height={160} />
       </div>
     </div>
   );

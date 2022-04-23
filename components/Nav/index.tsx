@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styles from './Nav.module.scss';
+import Image from 'next/image';
 
 type Items = {
   key: string;
@@ -16,10 +17,10 @@ const Nav = (props: Props) => {
   const router = useRouter();
   const [selected, setSelected] = useState(props.default);
   const items = [
-    { key: 'home', label: 'Home' },
-    { key: 'exchange', label: 'Exchange' },
-    { key: 'stake', label: 'Stake' },
-    { key: 'farm', label: 'Farm' },
+    { key: 'home', label: 'HOME' },
+    { key: 'exchange', label: 'EXCHANGE' },
+    { key: 'stake', label: 'STAKE' },
+    { key: 'farm', label: 'FARM' },
   ];
   const renderItems = () => {
     return (
@@ -59,9 +60,16 @@ const Nav = (props: Props) => {
 
   return (
     <nav className={styles.nav}>
-      <div style={{ fontSize: '24px' }}>BitCotes</div>
-      {renderItems()}
-      <div style={{ fontSize: '24px' }}>Login</div>
+      <div className={styles.nav_container}>
+        <div className={styles.nav_logo} onClick={() => selectItem('home')}>
+          <div style={{ marginRight: 10 }}>
+            <Image src="/images/candlestick.png" alt="Search Button" width={40} height={40} />
+          </div>
+          BITRADER
+        </div>
+        {renderItems()}
+        <div>SIGN IN</div>
+      </div>
     </nav>
   );
 };

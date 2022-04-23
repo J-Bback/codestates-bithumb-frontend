@@ -5,22 +5,22 @@
   min-width: 1400px;
   height:  100%;
   min-height: calc(100vh - 88px);
-  margin-top: 88px;
+  margin-top: 100px;
   padding: 20px 0 80px 0;
 
   .side_bar_wrap {
-    width: 360px;
+    width: 340px;
     margin-right: 40px;
     max-height: 1160px;
   }
 
   .ticker_wrap {
-    width: 1000px;
+    width: 900px;
 
     .title_wrap {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-end;
       width: 100%;
       height: 38px;
       margin-bottom: 10px;
@@ -68,4 +68,61 @@
   color: #fc4e6b;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
+  margin-left:10px;
+}
+.container {
+  margin: 0 auto !important;
+  display: flex;
+  flex-direction: row;
+  // width: 100%;
+  // min-width: 1400px;
+  // height:  100%;
+  // min-height: calc(100vh - 88px);
+  // margin-top: 88px;
+  // padding: 20px 0 80px 0;
+}
+
+.property {
+  color:#979797;
+  font-size: 14px;
+}
+.color_b {
+  color:#232323 !important;
+}
+
+.chart_select_bar {
+  border:1px solid #ececec;
+  border-radius: 8px;
+  width:250px;
+  height:30px;
+  margin: 30px 0 -10px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.chart_unselected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  flex:1;
+  text-align: center;
+  height:100%;
+  cursor: pointer;
+  // background-color: #fff;
+}
+
+.chart_selected {
+  border-radius: 8px;
+  background-color: #ececec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  flex:1;
+  text-align: center;
+  height:100%;
+  cursor: pointer;
 }

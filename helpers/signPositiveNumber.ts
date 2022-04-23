@@ -3,11 +3,11 @@ import costComma from './costComma';
 export const signRatePositive = (str: number | string) => {
   let num = Number(str);
   if (Math.sign(num) === 1) {
-    return `+${costComma(num)}`;
+    return `+${num}`;
   } else if (Math.sign(num) === 0) {
     return '0.00';
   } else {
-    return `${costComma(num)}`;
+    return `${num}`;
   }
 };
 

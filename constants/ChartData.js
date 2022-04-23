@@ -52,7 +52,6 @@ export const candleStickOptionsData = {
     tickPlacement: 'between',
   },
   title: {
-    text: '1분',
     align: 'left',
     margin: 10,
     offsetX: 60,
@@ -114,7 +113,6 @@ export const barOptionsData = {
     tickPlacement: 'between',
   },
   title: {
-    text: '1분',
     align: 'left',
     margin: 10,
     offsetX: 60,

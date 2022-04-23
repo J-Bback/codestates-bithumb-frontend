@@ -1,21 +1,25 @@
 @import '../../styles/variables.scss';
 
 .table_scroll_style {
+  border-collapse: collapse;
   border: 1px solid #eeeeee;
   border-radius: 3px;
   thead {
+    margin: 8px 0;
     th {
       font-size: 12px;
       font-weight: 700;
-      height: '32px';
+      height: 32px;
       align-items: center;
-      // border-top: 1px solid $gray-2;
-      
       border-left: none;
       border-right: none;
+      padding: 5px;
     }
   }
   tbody {
+    display: block;
+    max-height: 975px;
+    overflow-y: scroll;
     th,
     td {
       font-size: 12px;
@@ -27,11 +31,11 @@
       background: rgba(56, 136, 230, 0.1);
     }
   }
-  tbody {
-    display: block;
-    max-height: 975px;
-    overflow-y: scroll;
-  }
+  // tbody {
+  //   display: block;
+  //   max-height: 975px;
+  //   overflow-y: scroll;
+  // }
   thead,
   tbody tr {
     display: table;

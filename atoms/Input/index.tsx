@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Image from 'next/image';
 import styles from './Input.module.scss';
 
@@ -107,7 +107,7 @@ class Input extends Component<ComponentProps, { clearBtn: boolean }> {
       clearButton,
     } = this.props;
     return (
-      <Fragment>
+      <div className={styles.input_container}>
         <input
           className={`${styles.input} ${className || ''}`}
           style={inlineStyle || {}}
@@ -142,7 +142,7 @@ class Input extends Component<ComponentProps, { clearBtn: boolean }> {
             />
           </div>
         )}
-      </Fragment>
+      </div>
     );
   }
 }
