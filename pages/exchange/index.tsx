@@ -9,6 +9,7 @@ import { FetchWrapperArg } from '../../interface/fetchFactory';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
 import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
+import { coinNameKR } from '../../constants/NameParser';
 
 import ExchangeData from './ExchangeData';
 import { ApexChart } from '../../components/ApexChart';
@@ -31,7 +32,6 @@ const Exchange = (props: any) => {
   const [navigation, setNavigation] = useState('exchange');
   const [series, setSeries] = useState<any>([]);
   const [currencyList, setCurrencyList] = useState<any>({});
-  // const [recentData, setRecentData] = useState<any>([]);
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('BTC');
   const [chartList, setChartList] = useState<any>(['1분', '10분', '30분', '1시간']);
@@ -45,10 +45,6 @@ const Exchange = (props: any) => {
   const innerHeight = typeof size.width === 'number' && size.width < 1000 ? size.width * 0.4 - 8 : 400;
   // const canvas = useRef<HTMLCanvasElement>(null);
   // const ctx: CanvasRenderingContext2D | null = canvas.current ? canvas.current.getContext('2d') : null;
-  // let canvasWidth = ctx?.canvas.width;
-  // let canvasHeight = ctx?.canvas.height;
-  // ctx?.lineWidth ? (ctx.lineWidth = 10) : null;
-  // ctx?.fillRect(innerWidth / 2, innerHeight / 2 - 60, 80, 120);
 
   useEffect(() => {
     setTimeout(() => {
@@ -66,9 +62,7 @@ const Exchange = (props: any) => {
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
 
-  useEffect(() => {
-    // console.log(context.favorites);
-  }, [favorites]);
+  useEffect(() => {}, [favorites]);
 
   const getData = async () => {
     try {
@@ -108,14 +102,7 @@ const Exchange = (props: any) => {
       const response: any = await CallApi(data);
       const responseJson: any = await response.json();
       if (response.status === 200) {
-        // if (searchValue) {
-        //   const filter = Object.keys(responseJson.data);
-        // }
         setCurrencyList(responseJson.data);
-        // const seriesData: any[] = [];
-        // const tenthData: any = cloneData.splice(-10, 10);
-        // tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
-        // setSeries(seriesData);
       }
     } catch (e) {
       console.log(e);
@@ -124,8 +111,6 @@ const Exchange = (props: any) => {
 
   const getCurrentPrice = () => {
     return costComma(currencyList[selectedCurrency]?.closing_price);
-    //   const fluctateRate = currencyList[name].fluctate_rate_24H;
-    //   const accTradeValue = currencyList[name].acc_trade_value_24H;
   };
 
   const getCurrentFluctateRate = () => {
@@ -174,22 +159,23 @@ const Exchange = (props: any) => {
     if (searchValue) {
       keys = keys.filter((v) => v.includes(searchValue.toUpperCase()));
     }
-    // const sorted = keys.map((v) => currencyList[v].acc_trade_value_24H).sort((a, b) => a - b);
     return keys.map((name, i) => {
       const currentPrice = currencyList[name].closing_price;
       const fluctate = currencyList[name].fluctate_24H;
       const fluctateRate = currencyList[name].fluctate_rate_24H;
       const accTradeValue = currencyList[name].acc_trade_value_24H;
+      const nameKR: string = coinNameKR[name];
       if (name === 'date') {
         return;
       }
+
       return (
         <tr
           key={i}
           style={{
             cursor: 'pointer',
-            textAlign: 'center',
-            height: '50px',
+            textAlign: 'right',
+            height: '48px',
             wordBreak: 'break-all',
             alignItems: 'center',
             borderLeft: name === selectedCurrency ? '2px solid #979797' : '',
@@ -197,7 +183,7 @@ const Exchange = (props: any) => {
           onClick={() => {
             name !== selectedCurrency && setSelectedCurrency(name);
           }}>
-          <td style={{ width: '8%' }}>
+          <td style={{ width: '25px' }}>
             <div
               onClick={(e: any) => {
                 onAddFavorites(i, e);
@@ -208,25 +194,29 @@ const Exchange = (props: any) => {
               {favorites.includes(i) && <Image src="/images/star.png" alt="Close Button" width={14} height={14} />}
             </div>
           </td>
-          <td>{`${name} / KRW`}</td>
-          <td>{costComma(currentPrice)}</td>
+          <td style={{ width: '76px', textAlign: 'left' }}>
+            <div>{nameKR}</div>
+            <div>{`${name} / KRW`}</div>
+          </td>
+          <td style={{ width: '74px' }}>{costComma(currentPrice)}</td>
           <td
             style={
               Math.sign(Number(fluctateRate)) === 1
-                ? { color: '#F75467' }
+                ? { color: '#F75467', width: '71px' }
                 : Math.sign(Number(fluctateRate)) === 0
-                ? { color: '#282828' }
-                : { color: '#4386F9' }
+                ? { color: '#282828', width: '71px' }
+                : { color: '#4386F9', width: '71px' }
             }>
             <span>{`${signRatePositive(Number(fluctateRate))} %`}</span>
             <br />
             <span>{signPricePositive(Number(fluctate))}</span>
           </td>
-          <td>{`${costComma(Math.round(Number(accTradeValue) / 1000000))} 백만`}</td>
+          <td style={{ width: '92px', paddingRight: '14px' }}>{`${costComma(
+            Math.round(Number(accTradeValue) / 1000000)
+          )} 백만`}</td>
         </tr>
       );
     });
-    // console.log('currencyList', currencyList);
   };
 
   const renderTitle = () => {
@@ -286,8 +276,10 @@ const Exchange = (props: any) => {
               contentsStyle={{ width: '340px', borderLeft: '1px solid #eeeeee', borderRight: '1px solid #eeeeee' }}
             />
             <Table
-              theadWidth={[8, 23, 23, 23, 23]}
-              theadData={['', '자산', '현재가', '변동률(당일)', '거래금액(24H)']}
+              theadWidth={[101, 74, 71, 92]}
+              theadTextAlign={['left', 'right', 'right', 'right']}
+              theadPadding={['0 0 0 25px', '0', '0', '0 14px 0 0']}
+              theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
               tbodyData={tbodyData()}
               emptyTable={{
                 text: '검색된 가상자산이 없습니다',

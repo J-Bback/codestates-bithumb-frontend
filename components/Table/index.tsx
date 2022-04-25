@@ -4,6 +4,8 @@ import styles from './Table.module.scss';
 type PropsType = {
   theadWidth: number[];
   theadData: string[];
+  theadTextAlign?: string[];
+  theadPadding?: string[];
   tbodyData: any;
   emptyTable: {
     text: string;
@@ -14,7 +16,7 @@ type PropsType = {
 };
 
 const Table = (props: PropsType) => {
-  const { theadData, theadWidth, tbodyData, emptyTable, tableStyle, tbodyStyle } = props;
+  const { theadData, theadWidth, theadTextAlign, theadPadding, tbodyData, emptyTable, tableStyle, tbodyStyle } = props;
   const tbody = useRef<any>();
 
   const renderThead = () => {
@@ -23,7 +25,16 @@ const Table = (props: PropsType) => {
 
       if (typeof data === 'string') {
         returnTh = (
-          <th style={{ padding: '5px 0', borderBottom: '1px solid #eeeeee' }} key={i} width={`${theadWidth[i]}%`}>
+          <th
+            style={{
+              alignItems: 'center',
+              height: '30px',
+              borderBottom: '1px solid #eeeeee',
+              textAlign: theadTextAlign ? theadTextAlign[i] : 'center',
+              padding: theadPadding ? theadPadding[i] : '0',
+            }}
+            key={i}
+            width={theadWidth[i]}>
             {data}
           </th>
         );
