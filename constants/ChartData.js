@@ -46,7 +46,7 @@ export const candleStickOptionsData = {
   xaxis: {
     type: 'datetime',
     labels: {
-      show: true,
+      show: false,
       datetimeUTC: false,
     },
     tickPlacement: 'between',
@@ -61,56 +61,61 @@ export const candleStickOptionsData = {
 
 export const barOptionsData = {
   chart: {
-    type: 'candlestick',
-    height: 290,
-    id: 'candles',
+    height: 160,
+    type: 'bar',
     toolbar: {
-      autoSelected: 'pan',
-      show: true,
+      // autoSelected: 'pan',
+      show: false,
     },
     animations: {
       enabled: false,
-      easing: 'easeinout',
-      speed: 500,
-      animateGradually: {
-        enabled: false,
-        delay: 100,
-      },
-      dynamicAnimation: {
-        enabled: false,
-        speed: 300,
-      },
+      // easing: 'easeinout',
+      // speed: 500,
+      // animateGradually: {
+      //   enabled: false,
+      //   delay: 100,
+      // },
+      // dynamicAnimation: {
+      //   enabled: false,
+      // speed: 300,
+      // },
     },
-    zoom: {
-      enabled: true,
-      type: 'x',
-      resetIcon: {
-        offsetX: -100,
-        offsetY: 0,
-        fillColor: '#fff',
-        strokeColor: '#37474f',
-      },
-      selection: {
-        background: '#90CAF9',
-        border: '#0D47A1',
-      },
+    dataLabels: {
+      enabled: false,
     },
+    // zoom: {
+    //   enabled: true,
+    //   type: 'x',
+    //   resetIcon: {
+    //     offsetX: -100,
+    //     offsetY: 0,
+    //     fillColor: '#fff',
+    //     strokeColor: '#37474f',
+    //   },
+    //   selection: {
+    //     background: '#90CAF9',
+    //     border: '#0D47A1',
+    //   },
+    // },
   },
-  plotOptions: {
-    candlestick: {
-      colors: {
-        upward: '#3C90EB',
-        downward: '#DF7D46',
-      },
-    },
-  },
+  // plotOptions: {
+  //   candlestick: {
+  //     colors: {
+  //       upward: '#3C90EB',
+  //       downward: '#DF7D46',
+  //     },
+  //   },
+  // },
   xaxis: {
     type: 'datetime',
     labels: {
       show: true,
       datetimeUTC: false,
     },
-    tickPlacement: 'between',
+    // tickPlacement: 'between',
+  },
+  noData: {
+    text: 'Loading...',
   },
   title: {
     align: 'left',

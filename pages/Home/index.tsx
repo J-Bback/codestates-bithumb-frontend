@@ -13,6 +13,7 @@ import Nav from '../../components/Nav';
 import Tab from '../../components/Tab';
 import Table from '../../components/Table';
 import MarketTopChart from '../../components/MarketTopChart';
+import AreaChart from '../../components/AreaChart';
 
 import styles from './Home.module.scss';
 
@@ -84,11 +85,47 @@ const Home = (props: any) => {
   };
 
   const renderHeaderChart = () => {
+    const keys = Object.keys(currencyList).splice(0, 5);
+
     return (
       <header className={styles.header_wrap}>
-        <div className={styles.header_title}>{'원화 마켓 변동률 TOP5'}</div>
-        <div className={styles.header_chart}>
-          <MarketTopChart />
+        <div className={styles.header_title}>{'원화마켓 메이저 TOP5'}</div>
+        <div className={styles.header_chart_container}>
+          {keys.map((name, i) => {
+            const currentPrice = currencyList[name].closing_price;
+            const dayToDayFluctateRate = getDayToDayFluctate(name, 'rate');
+            return (
+              <div
+                key={i}
+                className={styles.header_chart_wrap}
+                style={i === 0 ? { paddingLeft: 0 } : i === keys.length - 1 ? { paddingRight: 0 } : {}}>
+                <div className={styles.coin_title}>{coinNameKR[name]}</div>
+                <div
+                  className={styles.coin_price}
+                  style={
+                    Math.sign(Number(dayToDayFluctateRate)) === 1
+                      ? { color: '#F75467' }
+                      : Math.sign(Number(dayToDayFluctateRate)) === 0
+                      ? { color: '#282828' }
+                      : { color: '#4386F9' }
+                  }>
+                  {costComma(currentPrice)}
+                </div>
+                <div
+                  className={styles.coin_fluctate_rate}
+                  style={
+                    Math.sign(Number(dayToDayFluctateRate)) === 1
+                      ? { color: '#F75467' }
+                      : Math.sign(Number(dayToDayFluctateRate)) === 0
+                      ? { color: '#282828' }
+                      : { color: '#4386F9' }
+                  }>
+                  {`(${signRatePositive(Number(dayToDayFluctateRate))} %)`}
+                </div>
+                <AreaChart />
+              </div>
+            );
+          })}
         </div>
       </header>
     );
@@ -197,7 +234,7 @@ const Home = (props: any) => {
             text: '검색된 가상자산이 없습니다',
             style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
           }}
-          tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px' }}
+          tableStyle={{ width: '1200px', maxHeight: '1073px', justifyItems: 'center' }}
           // tbodyStyle={{ height: '975px', overflowY: 'auto' }}
         />
       </div>

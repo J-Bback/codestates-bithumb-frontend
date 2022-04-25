@@ -19,8 +19,9 @@ import Tab from '../../components/Tab';
 import Table from '../../components/Table';
 
 import styles from './Exchange.module.scss';
-import { IMainContext } from '../../interface/Interface';
+import { IMainContext } from '../../interface/interface';
 import { MainContext } from '../../context/Context';
+import { indexOf } from 'lodash';
 
 interface Size {
   width: number | undefined;
@@ -37,6 +38,7 @@ const Exchange = (props: any) => {
   const [chartList, setChartList] = useState<any>(['1분', '10분', '30분', '1시간']);
   const [chartSelect, setChartSelect] = useState<string>('1분');
   const [favorites, setFavorites] = useState<any[]>([]);
+  const [originFavorites, setOriginFavorites] = useState<any[]>([]);
   const router = useRouter();
   const { query } = router;
 
@@ -62,7 +64,9 @@ const Exchange = (props: any) => {
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
 
-  useEffect(() => {}, [favorites]);
+  useEffect(() => {
+    console.log(context.favorites);
+  }, [favorites]);
 
   const getData = async () => {
     try {
@@ -127,6 +131,7 @@ const Exchange = (props: any) => {
 
   const onAddFavorites = (i: number, e: { stopPropagation: () => void }) => {
     e.stopPropagation();
+
     let temp: any = [...favorites];
     if (temp.length !== 0) {
       let exist = false;
@@ -154,8 +159,33 @@ const Exchange = (props: any) => {
     }
   };
 
-  const tbodyData = () => {
+  const onSubsFavorites = (name: string, e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    const keys = Object.keys(currencyList);
+    const targetIdx = keys.indexOf(name);
+    let deleteFIdx: any = null;
+    let temp: any = [...favorites];
+    for (let i in temp) {
+      if (temp[i] === targetIdx) deleteFIdx = i;
+    }
+    temp.splice(deleteFIdx, 1);
+    setFavorites(temp);
+    context.handleStateChange('favorites', temp);
+  };
+
+  const tbodyData = (type: string) => {
     let keys = Object.keys(currencyList);
+    if (type === 'favorites') {
+      // console.log('Context', context.favorites);
+      let temp: any = [];
+      for (let i = 0; i < keys.length; i++) {
+        for (let k = 0; k < context.favorites.length; k++) {
+          if (keys[i] === keys[context.favorites[k]]) temp.push(keys[i]);
+        }
+      }
+
+      keys = temp;
+    }
     if (searchValue) {
       keys = keys.filter((v) => v.includes(searchValue.toUpperCase()));
     }
@@ -184,15 +214,25 @@ const Exchange = (props: any) => {
             name !== selectedCurrency && setSelectedCurrency(name);
           }}>
           <td style={{ width: '25px' }}>
-            <div
-              onClick={(e: any) => {
-                onAddFavorites(i, e);
-              }}>
-              {!favorites.includes(i) && (
-                <Image src="/images/star_empty.png" alt="Close Button" width={14} height={14} />
-              )}
-              {favorites.includes(i) && <Image src="/images/star.png" alt="Close Button" width={14} height={14} />}
-            </div>
+            {type === 'krw' && (
+              <div
+                onClick={(e: any) => {
+                  onAddFavorites(i, e);
+                }}>
+                {!favorites.includes(i) && (
+                  <Image src="/images/star_empty.png" alt="Close Button" width={14} height={14} />
+                )}
+                {favorites.includes(i) && <Image src="/images/star.png" alt="Close Button" width={14} height={14} />}
+              </div>
+            )}
+            {type === 'favorites' && (
+              <div
+                onClick={(e: any) => {
+                  onSubsFavorites(name, e);
+                }}>
+                <Image src="/images/star.png" alt="Close Button" width={14} height={14} />
+              </div>
+            )}
           </td>
           <td style={{ width: '76px', textAlign: 'left' }}>
             <div>{nameKR}</div>
@@ -220,9 +260,10 @@ const Exchange = (props: any) => {
   };
 
   const renderTitle = () => {
+    const nameKR: string = coinNameKR[selectedCurrency];
     return (
       <div className={styles.title_wrap}>
-        <div className={styles.title}>코인이름</div>
+        <div className={styles.title}>{nameKR}</div>
         <div style={{ color: '#979797', marginBottom: 4 }}>{selectedCurrency} / KRW</div>
       </div>
     );
@@ -275,19 +316,36 @@ const Exchange = (props: any) => {
               }}
               contentsStyle={{ width: '340px', borderLeft: '1px solid #eeeeee', borderRight: '1px solid #eeeeee' }}
             />
-            <Table
-              theadWidth={[101, 74, 71, 92]}
-              theadTextAlign={['left', 'right', 'right', 'right']}
-              theadPadding={['0 0 0 25px', '0', '0', '0 14px 0 0']}
-              theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
-              tbodyData={tbodyData()}
-              emptyTable={{
-                text: '검색된 가상자산이 없습니다',
-                style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
-              }}
-              tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px', color: '#232323' }}
-              tbodyStyle={{ height: '975px', overflowY: 'auto' }}
-            />
+            {query.tab === 'krw' && (
+              <Table
+                theadWidth={[101, 74, 71, 92]}
+                theadTextAlign={['left', 'right', 'right', 'right']}
+                theadPadding={['0 0 0 25px', '0', '0', '0 14px 0 0']}
+                theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
+                tbodyData={tbodyData('krw')}
+                emptyTable={{
+                  text: '검색된 가상자산이 없습니다',
+                  style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+                }}
+                tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px', color: '#232323' }}
+                tbodyStyle={{ height: '975px', overflowY: 'auto' }}
+              />
+            )}
+            {query.tab === 'favorites' && (
+              <Table
+                theadWidth={[101, 74, 71, 92]}
+                theadTextAlign={['left', 'right', 'right', 'right']}
+                theadPadding={['0 0 0 25px', '0', '0', '0 14px 0 0']}
+                theadData={['자산', '현재가', '변동률(당일)', '거래금액(24H)']}
+                tbodyData={tbodyData('favorites')}
+                emptyTable={{
+                  text: '검색된 가상자산이 없습니다',
+                  style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+                }}
+                tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px', color: '#232323' }}
+                tbodyStyle={{ height: '975px', overflowY: 'auto' }}
+              />
+            )}
           </section>
           <section className={styles.ticker_wrap}>
             {renderTitle()}
