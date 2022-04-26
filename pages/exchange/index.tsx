@@ -21,7 +21,7 @@ import Table from '../../components/Table';
 import styles from './Exchange.module.scss';
 import { IMainContext } from '../../interface/interface';
 import { MainContext } from '../../context/Context';
-import { indexOf } from 'lodash';
+import indexOf from 'lodash/indexOf';
 
 interface Size {
   width: number | undefined;
@@ -363,7 +363,7 @@ const Exchange = (props: any) => {
             </div>
             <ApexChart series={series} />
             <div className={styles.transaction_and_order_wrap}>
-              <div>
+              {/* <div>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <div>{getCurrentPrice()}</div>
                   <div>{getCurrentFluctateRate()}</div>
@@ -374,7 +374,72 @@ const Exchange = (props: any) => {
                 <div>차트</div>
                 <div>체결내역</div>
               </div>
-              <div>ㅁㅐ수/매도 호가창</div>
+              <div>ㅁㅐ수/매도 호가창</div> */}
+              <section style={{ flex: 2, border: '1px solid black' }}>
+                <div className={styles.transaction}>
+                  <div style={{ color: '#F55467', fontSize: 25, fontWeight: 500, width: 150 }}>{getCurrentPrice()}</div>
+                  <div className={styles.transaction_p}>+{getCurrentFluctateRate()}</div>
+                </div>
+
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: 12,
+                    marginBottom: 3,
+                  }}>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginRight: 5 }}>
+                    <div style={{ color: '#979797' }}>거래량(24H)</div>
+                    <div>3,237.9564BTC</div>
+                  </div>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginLeft: 5 }}>
+                    <div style={{ color: '#979797' }}>고가(당일)</div>
+                    <div>49,874,000</div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: 12,
+                    marginBottom: 3,
+                  }}>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginRight: 5 }}>
+                    <div style={{ color: '#979797' }}>거래금액(24H)</div>
+                    <div>1,598.3 억</div>
+                  </div>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginLeft: 5 }}>
+                    <div style={{ color: '#979797' }}>저가(당일)</div>
+                    <div>49,171,000</div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: 12,
+                    marginBottom: 3,
+                  }}>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginRight: 5 }}>
+                    <div style={{ color: '#979797' }}>체결강도(24H)</div>
+                    <div>180.48%</div>
+                  </div>
+                  <div style={{ width: '50%', display: 'flex', justifyContent: 'space-between', marginLeft: 5 }}>
+                    <div style={{ color: '#979797' }}>전일종가</div>
+                    <div>49,171,000</div>
+                  </div>
+                </div>
+
+                <div style={{ height: 150, border: '1px solid pink' }}>차트</div>
+                <div style={{ border: '1px solid pink' }}>체결내역</div>
+              </section>
+              <section style={{ flex: 1, border: '1px solid black', minHeight: '100%', overflowY: 'scroll' }}>
+                호가창
+              </section>
+              <section style={{ flex: 2, border: '1px solid black' }}>매수/매도창</section>
             </div>
           </section>
         </div>
