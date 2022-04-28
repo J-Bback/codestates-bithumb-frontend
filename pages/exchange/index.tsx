@@ -225,7 +225,9 @@ const Exchange = (props: any) => {
       keys = temp;
     }
     if (searchValue) {
-      keys = keys.filter((v) => v.includes(searchValue.toUpperCase()));
+      keys = keys.filter(
+        (v) => v.includes(searchValue.toUpperCase()) || coinNameKR[v]?.includes(searchValue.toUpperCase())
+      );
     }
     return keys.map((name, i) => {
       const currentPrice = currencyList[name].closing_price;

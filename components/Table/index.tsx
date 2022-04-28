@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import styles from './Table.module.scss';
 
 type PropsType = {
-  theadWidth: any;
+  theadWidth?: Array<number>;
   theadData: string[];
   theadTextAlign?: any;
   theadPadding?: string[];
@@ -33,9 +33,9 @@ const Table = (props: PropsType) => {
               borderBottom: '1px solid #eeeeee',
               textAlign: theadText,
               padding: theadPadding ? theadPadding[i] : '0',
+              width: `${theadWid}px`,
             }}
-            key={i}
-            width={theadWid}>
+            key={i}>
             {data}
           </th>
         );
@@ -54,9 +54,7 @@ const Table = (props: PropsType) => {
           tbodyData
         ) : (
           <tr>
-            <td colSpan={'100%'} style={emptyTable.style || {}}>
-              {emptyTable.text}
-            </td>
+            <td style={emptyTable.style || {}}>{emptyTable.text}</td>
           </tr>
         )}
       </tbody>
