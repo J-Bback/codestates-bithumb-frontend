@@ -8,7 +8,7 @@ import { IMainContext } from '../../interface/interface';
 import { MainContext } from '../../context/Context';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
-import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
+import signPositiveNumber from '../../helpers/signPositiveNumber';
 import { coinNameKR } from '../../constants/NameParser';
 
 import Input from '../../atoms/Input';
@@ -153,7 +153,7 @@ const Home = (props: any) => {
                       ? { color: '#282828' }
                       : { color: '#4386F9' }
                   }>
-                  {`(${signRatePositive(Number(dayToDayFluctateRate))} %)`}
+                  {`(${signPositiveNumber.signRatePositive(Number(dayToDayFluctateRate))} %)`}
                 </div>
                 <AreaChart />
               </div>
@@ -278,8 +278,8 @@ const Home = (props: any) => {
                 ? { color: '#282828', width: '262px', padding: '0 24px 0 15px', fontSize: '14px' }
                 : { color: '#4386F9', width: '262px', padding: '0 24px 0 15px', fontSize: '14px' }
             }>
-            <span>{`${signPricePositive(Number(dayToDayFluctate))} 원 `}</span>
-            <span>{`(${signRatePositive(Number(dayToDayFluctateRate))} %)`}</span>
+            <span>{`${signPositiveNumber.signPricePositive(Number(dayToDayFluctate))} 원 `}</span>
+            <span>{`(${signPositiveNumber.signRatePositive(Number(dayToDayFluctateRate))} %)`}</span>
           </td>
           <td style={{ width: '192px', padding: '0 13px', fontSize: '14px' }}>{`${costComma(
             Math.round(Number(accTradeValue))

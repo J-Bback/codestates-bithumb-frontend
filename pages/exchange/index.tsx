@@ -8,7 +8,8 @@ import { FetchWrapperArg } from '../../interface/fetchFactory';
 // import DataStore from '../stores/DataStore';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
-import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
+import signPositiveNumber from '../../helpers/signPositiveNumber';
+// import signPricePositive from '../../helpers/signPositiveNumber';
 import { coinNameKR } from '../../constants/NameParser';
 
 import ExchangeData from './ExchangeData';
@@ -287,9 +288,9 @@ const Exchange = (props: any) => {
                 ? { color: '#282828', width: '71px' }
                 : { color: '#4386F9', width: '71px' }
             }>
-            <span>{`${signRatePositive(Number(fluctateRate))} %`}</span>
+            <span>{`${signPositiveNumber.signRatePositive(Number(fluctateRate))} %`}</span>
             <br />
-            <span>{signPricePositive(Number(fluctate))}</span>
+            <span>{signPositiveNumber.signPricePositive(Number(fluctate))}</span>
           </td>
           <td style={{ width: '92px', paddingRight: '14px' }}>{`${costComma(
             Math.round(Number(accTradeValue) / 1000000)
