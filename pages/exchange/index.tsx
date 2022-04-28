@@ -5,11 +5,9 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { UseWindowSize } from './hooks/UseWindowSize';
 import { FetchWrapperArg } from '../../interface/fetchFactory';
-// import DataStore from '../stores/DataStore';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
 import signPositiveNumber from '../../helpers/signPositiveNumber';
-// import signPricePositive from '../../helpers/signPositiveNumber';
 import { coinNameKR } from '../../constants/NameParser';
 
 import ExchangeData from './ExchangeData';

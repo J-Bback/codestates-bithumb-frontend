@@ -21,6 +21,7 @@
 // }
 {
   "compilerOptions": {
+    "suppressImplicitAnyIndexErrors": true,
     "experimentalDecorators": true,
     "module": "esnext",
     "target": "esnext",
