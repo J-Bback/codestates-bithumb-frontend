@@ -28,15 +28,28 @@ interface Size {
   height: number | undefined;
 }
 
+interface BarData {
+  x: number;
+  y: number;
+  fillColor: string;
+  strokeColor?: string;
+}
+
+interface CandleData {
+  x: number;
+  y: string[];
+}
+
 const Exchange = (props: any) => {
   const context = useContext<IMainContext>(MainContext);
   const [navigation, setNavigation] = useState('exchange');
   const [series, setSeries] = useState<any>([]);
+  const [barSeries, setBarSeries] = useState<Array<BarData>>([]);
   const [currencyList, setCurrencyList] = useState<any>({});
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('BTC');
-  const [chartList, setChartList] = useState<any>(['1분', '10분', '30분', '1시간']);
-  const [chartSelect, setChartSelect] = useState<string>('1분');
+  const [chartList, setChartList] = useState<any>(['1분', '10분', '1시간', '6시간']);
+  const [chartSelect, setChartSelect] = useState<string>('1시간');
   const [favorites, setFavorites] = useState<any[]>([]);
   const [originFavorites, setOriginFavorites] = useState<any[]>([]);
   const router = useRouter();
@@ -71,11 +84,26 @@ const Exchange = (props: any) => {
 
   useEffect(() => {}, [favorites]);
 
+  const intervalParser = (time: string) => {
+    switch (time) {
+      case '1분':
+        return '1m';
+      case '10분':
+        return '10m';
+      case '1시간':
+        return '1h';
+      case '6시간':
+        return '6h';
+      default:
+        break;
+    }
+  };
+
   const getData = async () => {
     try {
       const orderCurrency = selectedCurrency;
       const paymentCurrency = 'KRW';
-      const chartIntervals = '1h';
+      const chartIntervals = intervalParser(chartSelect);
       const data = {
         method: 'GET',
         url: `https://api.bithumb.com/public/candlestick/${orderCurrency}_${paymentCurrency}/${chartIntervals}`,
@@ -84,13 +112,21 @@ const Exchange = (props: any) => {
       const response: any = await CallApi(data);
       const responseJson: any = await response.json();
       if (response.status === 200) {
-        const cloneData: any[] = cloneDeep(responseJson.data);
-        const seriesData: any[] = [];
+        const cloneData = cloneDeep(responseJson.data);
+        const seriesData: Array<CandleData> = [];
+        const barSeriesData: Array<BarData> = [];
         const len: number = responseJson.data.length;
-        const lastData: any[] = responseJson.data[len];
-        const tenthData: any = cloneData.splice(-50, 50);
-        tenthData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
+        const fiftyData: any = cloneData.splice(-50, 50);
+        fiftyData.map((v: any) => seriesData.push({ x: v[0], y: [v[1], v[3], v[4], v[2]] }));
+        fiftyData.map((v: any) =>
+          barSeriesData.push({
+            x: v[0],
+            y: Math.abs(v[1] - v[2]),
+            fillColor: v[1] - v[2] > 0 ? '#1F5ED2' : '#D13C4B',
+          })
+        );
         setSeries(seriesData);
+        setBarSeries(barSeriesData);
       }
     } catch (e) {
       console.log(e);
@@ -363,20 +399,8 @@ const Exchange = (props: any) => {
                 </div>
               ))}
             </div>
-            <ApexChart series={series} />
+            <ApexChart series={series} barSeries={barSeries} />
             <div className={styles.transaction_and_order_wrap}>
-              {/* <div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <div>{getCurrentPrice()}</div>
-                  <div>{getCurrentFluctateRate()}</div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <div>거래량~</div>
-                </div>
-                <div>차트</div>
-                <div>체결내역</div>
-              </div>
-              <div>ㅁㅐ수/매도 호가창</div> */}
               <section style={{ flex: 2, border: '1px solid black' }}>
                 <div className={styles.transaction}>
                   <div style={{ color: '#F55467', fontSize: 25, fontWeight: 500, width: 150 }}>{getCurrentPrice()}</div>

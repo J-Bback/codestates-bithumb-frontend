@@ -9,16 +9,6 @@ export const candleStickOptionsData = {
     },
     animations: {
       enabled: false,
-      // easing: 'easeinout',
-      // speed: 500,
-      // animateGradually: {
-      //   enabled: true,
-      //   delay: 100,
-      // },
-      // dynamicAnimation: {
-      //   enabled: true,
-      //   speed: 300,
-      // },
     },
     zoom: {
       enabled: true,
@@ -64,48 +54,15 @@ export const barOptionsData = {
     height: 160,
     type: 'bar',
     toolbar: {
-      // autoSelected: 'pan',
       show: false,
     },
     animations: {
       enabled: false,
-      // easing: 'easeinout',
-      // speed: 500,
-      // animateGradually: {
-      //   enabled: false,
-      //   delay: 100,
-      // },
-      // dynamicAnimation: {
-      //   enabled: false,
-      // speed: 300,
-      // },
     },
     dataLabels: {
       enabled: false,
     },
-    // zoom: {
-    //   enabled: true,
-    //   type: 'x',
-    //   resetIcon: {
-    //     offsetX: -100,
-    //     offsetY: 0,
-    //     fillColor: '#fff',
-    //     strokeColor: '#37474f',
-    //   },
-    //   selection: {
-    //     background: '#90CAF9',
-    //     border: '#0D47A1',
-    //   },
-    // },
   },
-  // plotOptions: {
-  //   candlestick: {
-  //     colors: {
-  //       upward: '#3C90EB',
-  //       downward: '#DF7D46',
-  //     },
-  //   },
-  // },
   xaxis: {
     type: 'datetime',
     labels: {
@@ -116,6 +73,9 @@ export const barOptionsData = {
   },
   noData: {
     text: 'Loading...',
+  },
+  dataLabels: {
+    enabled: false,
   },
   title: {
     align: 'left',

@@ -2,9 +2,9 @@ import React, { CSSProperties, useRef } from 'react';
 import styles from './Table.module.scss';
 
 type PropsType = {
-  theadWidth: number[];
+  theadWidth: any;
   theadData: string[];
-  theadTextAlign?: string[];
+  theadTextAlign?: any;
   theadPadding?: string[];
   tbodyData: any;
   emptyTable: {
@@ -22,7 +22,8 @@ const Table = (props: PropsType) => {
   const renderThead = () => {
     return theadData.map((data, i) => {
       let returnTh = null;
-
+      const theadText = theadTextAlign ? theadTextAlign[i] : 'center';
+      const theadWid = theadWidth && theadWidth[i];
       if (typeof data === 'string') {
         returnTh = (
           <th
@@ -30,11 +31,11 @@ const Table = (props: PropsType) => {
               alignItems: 'center',
               height: '30px',
               borderBottom: '1px solid #eeeeee',
-              textAlign: theadTextAlign ? theadTextAlign[i] : 'center',
+              textAlign: theadText,
               padding: theadPadding ? theadPadding[i] : '0',
             }}
             key={i}
-            width={theadWidth[i]}>
+            width={theadWid}>
             {data}
           </th>
         );

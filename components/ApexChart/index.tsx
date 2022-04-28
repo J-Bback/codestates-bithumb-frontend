@@ -5,12 +5,26 @@ import { barOptionsData } from '../../constants/ChartData';
 import styles from './ApexChart.module.scss';
 const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });
 
-export const ApexChart = (props: any) => {
-  // [[Timestamp], [O, H, L, C]]
-  // y축 open, high, low, close
+interface BarData {
+  x: number;
+  y: number;
+  fillColor: string;
+  strokeColor?: string;
+}
+
+interface CandleData {
+  x: number;
+  y: string[];
+}
+
+interface ApexChartProps {
+  series: Array<CandleData>;
+  barSeries: Array<BarData>;
+}
+
+export const ApexChart = (props: ApexChartProps) => {
   const [options, setOptions] = useState<any>(candleStickOptionsData);
   const [barOptions, setBarOptions] = useState<any>(barOptionsData);
-
   return (
     <div className={styles.contents_wrap}>
       <ReactApexChart
@@ -21,8 +35,15 @@ export const ApexChart = (props: any) => {
         height={290}
       />
       <div>
-        <ReactApexChart options={barOptions} series={[{ data: props?.series }]} type="bar" width={900} height={160} />
+        <ReactApexChart
+          options={barOptions}
+          series={[{ data: props?.barSeries }]}
+          type="bar"
+          width={900}
+          height={160}
+        />
       </div>
+      )
     </div>
   );
 };
