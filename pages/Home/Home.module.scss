@@ -135,3 +135,24 @@
     flex-direction: column;
   }
 }
+
+.table_row {
+  cursor: pointer;
+  text-align: right;
+  height: 49px;
+  word-break: break-all;
+  align-items: center;
+  font-size: 14px;
+  .table_asset_row {
+    width: 197px;
+    height: 49px;
+    padding-left: 10px;
+    margin: 0;
+    align-items: center;
+    text-align: left;
+    margin-right: 0;
+    .table_favorite {
+      margin-right: 10px;
+    }
+  }
+}

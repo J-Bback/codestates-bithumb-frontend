@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import { Provider } from 'mobx-react';
 import { useStore } from './stores';
 import { MainContext } from '../context/Context';
-import { IMainContext } from '../interface/Interface';
+// import { IMainContext } from '../interface/Interface';
 import { useState } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {

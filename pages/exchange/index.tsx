@@ -61,12 +61,15 @@ const Exchange = (props: any) => {
   }, [currencyList]);
 
   useEffect(() => {
+    if (query?.selectedCurrency && typeof query.selectedCurrency === 'string') {
+      const currency = query.selectedCurrency;
+      setSelectedCurrency(currency);
+    }
+    setFavorites([...context.favorites]);
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
 
-  useEffect(() => {
-    console.log(context.favorites);
-  }, [favorites]);
+  useEffect(() => {}, [favorites]);
 
   const getData = async () => {
     try {
@@ -176,7 +179,6 @@ const Exchange = (props: any) => {
   const tbodyData = (type: string) => {
     let keys = Object.keys(currencyList);
     if (type === 'favorites') {
-      // console.log('Context', context.favorites);
       let temp: any = [];
       for (let i = 0; i < keys.length; i++) {
         for (let k = 0; k < context.favorites.length; k++) {
@@ -340,7 +342,7 @@ const Exchange = (props: any) => {
                 tbodyData={tbodyData('favorites')}
                 emptyTable={{
                   text: '검색된 가상자산이 없습니다',
-                  style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+                  style: { fontSize: '13px', textAlign: 'center', height: '50px', padding: '20px' },
                 }}
                 tableStyle={{ width: '100%', maxHeight: '1073px', fontSize: '12px', color: '#232323' }}
                 tbodyStyle={{ height: '975px', overflowY: 'auto' }}
@@ -459,6 +461,5 @@ Exchange.getInitialProps = async (ctx: FetchWrapperArg) => {
   };
   const res = await fetch(data.url);
   const resJson = await res.json();
-  console.log('SSR resJson', resJson);
   return { props: resJson };
 };

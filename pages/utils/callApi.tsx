@@ -8,6 +8,7 @@ type DataProps = {
 };
 
 type Options = {
+  // mode: any;
   method: string;
   header: any;
   body?: any;
@@ -16,6 +17,7 @@ type Options = {
 
 export const CallApi = async (data: DataProps) => {
   let options: Options = {
+    // mode: 'no-cors',
     method: data.method,
     header: {
       'Content-Type': 'application/json',
@@ -26,7 +28,7 @@ export const CallApi = async (data: DataProps) => {
   if (!!data.body && data.method === 'POST') {
     options.body = data.body.stringify();
   }
-
+  // `https://exp.host/${data.url}/api/v2/push/send`
   const response = await fetch(data.url, options)
     .then((res) => res)
     .catch((e) => console.log(e));

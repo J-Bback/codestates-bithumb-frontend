@@ -1,8 +1,11 @@
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useState, useEffect, useRef } from 'react';
+import cloneDeep from 'lodash/cloneDeep';
 
+import { IMainContext } from '../../interface/interface';
+import { MainContext } from '../../context/Context';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
 import { signRatePositive, signPricePositive } from '../../helpers/signPositiveNumber';
@@ -12,7 +15,6 @@ import Input from '../../atoms/Input';
 import Nav from '../../components/Nav';
 import Tab from '../../components/Tab';
 import Table from '../../components/Table';
-import MarketTopChart from '../../components/MarketTopChart';
 import AreaChart from '../../components/AreaChart';
 
 import styles from './Home.module.scss';
@@ -22,15 +24,19 @@ const Home = (props: any) => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [currencyList, setCurrencyList] = useState<any>({});
   const [selectedCurrency, setSelectedCurrency] = useState<string>('');
+  const [series, setSeries] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState<number>();
+  const [favorites, setFavorites] = useState<any[]>([]);
 
   const tableRef = useRef<HTMLTableRowElement>(null);
 
+  const context = useContext<IMainContext>(MainContext);
   const router = useRouter();
   const { query } = router;
 
   useEffect(() => {
+    setFavorites([...context.favorites]);
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
 
@@ -39,6 +45,33 @@ const Home = (props: any) => {
       getTicker();
     }, 1000);
   }, [currencyList]);
+
+  const getData = async (currency: string) => {
+    try {
+      const orderCurrency = currency;
+      const paymentCurrency = 'KRW';
+      const chartIntervals = '24h';
+      const data = {
+        method: 'GET',
+        url: `https://api.bithumb.com/public/candlestick/${orderCurrency}_${paymentCurrency}/${chartIntervals}`,
+      };
+
+      const response: any = await CallApi(data);
+      const responseJson: any = await response.json();
+      if (response.status === 200) {
+        // const cloneData: any[] = cloneDeep(responseJson.data);
+        // console.log('cloneData', cloneData);
+        // const seriesData: any[] = [];
+        // const fiftyData: any = cloneData.splice(-50, 50);
+        // console.log('fiftyData', fiftyData);
+        // const result = fiftyData.map((v: any) => seriesData.push({ x: v[0], y: v[2] }));
+        // // setSeries(seriesData);
+        // console.log('result', result);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const getTicker = async () => {
     try {
@@ -86,7 +119,7 @@ const Home = (props: any) => {
 
   const renderHeaderChart = () => {
     const keys = Object.keys(currencyList).splice(0, 5);
-
+    // getData('BTC');
     return (
       <header className={styles.header_wrap}>
         <div className={styles.header_title}>{'원화마켓 메이저 TOP5'}</div>
@@ -131,8 +164,67 @@ const Home = (props: any) => {
     );
   };
 
+  const handleClickBody = (selectedCurrency: string) => {
+    router.push({ pathname: '/exchange', query: { selectedCurrency } }, undefined, { shallow: true });
+  };
+
+  const onAddFavorites = (i: number, e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+
+    let temp: any = [...favorites];
+    if (temp.length !== 0) {
+      let exist = false;
+      for (let k in temp) {
+        if (temp[k] === i) {
+          exist = true;
+          if (exist) {
+            temp.splice(k, 1);
+          }
+        }
+      }
+      if (exist) {
+        setFavorites(temp);
+        context.handleStateChange('favorites', temp);
+      }
+      if (!exist) {
+        setFavorites((prev: any) => {
+          return [...prev, i];
+        });
+        context.handleStateChange('favorites', [...favorites, i]);
+      }
+    } else {
+      setFavorites([i]);
+      context.handleStateChange('favorites', [i]);
+    }
+  };
+
+  const onSubsFavorites = (name: string, e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    const keys = Object.keys(currencyList);
+    const targetIdx = keys.indexOf(name);
+    let deleteFIdx: any = null;
+    let temp: any = [...favorites];
+    for (let i in temp) {
+      if (temp[i] === targetIdx) deleteFIdx = i;
+    }
+    temp.splice(deleteFIdx, 1);
+    setFavorites(temp);
+    context.handleStateChange('favorites', temp);
+  };
+
   const tbodyData = () => {
     let keys = Object.keys(currencyList);
+    if (query.tab === 'favorites') {
+      let temp = [];
+      for (let i = 0; i < keys.length; i++) {
+        for (let k = 0; k < context.favorites.length; k++) {
+          if (keys[i] === keys[context.favorites[k]]) temp.push(keys[i]);
+        }
+      }
+
+      keys = temp;
+    }
+
     if (searchValue) {
       keys = keys.filter((v) => v.includes(searchValue.toUpperCase()));
     }
@@ -152,21 +244,30 @@ const Home = (props: any) => {
         return;
       }
       return (
-        <tr
-          key={i}
-          style={{
-            cursor: 'pointer',
-            textAlign: 'right',
-            height: '49px',
-            wordBreak: 'break-all',
-            alignItems: 'center',
-            fontSize: '14px',
-          }}
-          ref={tableRef}
-          onClick={() => name !== selectedCurrency && setSelectedCurrency(name)}>
-          <td style={{ textAlign: 'left', width: '222px', paddingLeft: '10px' }}>
+        <tr key={i} className={styles.table_row} ref={tableRef} onClick={() => handleClickBody(name)}>
+          <td style={{ width: '25px' }}>
+            <div style={{ alignItems: 'center' }}>
+              {query.tab === 'krw' && (
+                <div className={styles.table_favorite} onClick={(e: any) => onAddFavorites(i, e)}>
+                  {favorites.includes(i) ? (
+                    <Image src="/images/star.png" alt="Favorite Image" width={14} height={14} />
+                  ) : (
+                    <Image src="/images/star_empty.png" alt="Favorite Empty Image" width={14} height={14} />
+                  )}
+                </div>
+              )}
+              {query.tab === 'favorites' && (
+                <div onClick={(e: any) => onSubsFavorites(name, e)}>
+                  <Image src="/images/star.png" alt="Favorite Image" width={14} height={14} />
+                </div>
+              )}
+            </div>
+          </td>
+          <td className={styles.table_asset_row}>
+            {/* <div style={{ alignItems: 'center' }}> */}
             <div style={{ fontSize: '15px' }}>{nameKR}</div>
             <div style={{ fontSize: '12px', color: '#a4a4a4' }}>{`${name} / KRW`}</div>
+            {/* </div> */}
           </td>
           <td style={{ width: '161px', padding: '0 13px', fontSize: '14px' }}>{`${costComma(currentPrice)} 원`}</td>
           <td
@@ -195,9 +296,9 @@ const Home = (props: any) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>CodeStates X Bithumb</title>
-        <meta name="Bithumb" content="Exchange" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>BITRADER | Cryptocurrency Trading Platform</title>
+        <meta name="Bithumb" content="Home" />
+        <link rel="icon" href="/images/candlestick.png" />
       </Head>
       <Nav setItem={(key: string) => setNavigation(key)} default={'home'} />
       {renderHeaderChart()}
@@ -232,13 +333,13 @@ const Home = (props: any) => {
           tbodyStyle={{ fontSize: '14px', fontWeight: 400 }}
           emptyTable={{
             text: '검색된 가상자산이 없습니다',
-            style: { fontSize: '13px', textAlign: 'center', paddingTop: '20px' },
+            style: { fontSize: '13px', textAlign: 'center', padding: '20px' },
           }}
           tableStyle={{ width: '1200px', maxHeight: '1073px', justifyItems: 'center' }}
           // tbodyStyle={{ height: '975px', overflowY: 'auto' }}
         />
       </div>
-      <footer className={styles.footer}>{'푸터'}</footer>
+      <footer className={styles.footer}>{'footer'}</footer>
     </div>
   );
 };
