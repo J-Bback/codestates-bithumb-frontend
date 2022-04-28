@@ -39,7 +39,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "typeRoots": [
       "node_modules/@types",
       "@types"
