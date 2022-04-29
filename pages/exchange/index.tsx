@@ -168,10 +168,10 @@ const Exchange = (props: any) => {
   const onAddFavorites = (i: number, e: { stopPropagation: () => void }) => {
     e.stopPropagation();
 
-    let temp: any = [...favorites];
+    const temp: any = [...favorites];
     if (temp.length !== 0) {
       let exist = false;
-      for (let k in temp) {
+      for (const k in temp) {
         if (temp[k] === i) {
           exist = true;
           if (exist) {
@@ -200,8 +200,8 @@ const Exchange = (props: any) => {
     const keys = Object.keys(currencyList);
     const targetIdx = keys.indexOf(name);
     let deleteFIdx: any = null;
-    let temp: any = [...favorites];
-    for (let i in temp) {
+    const temp: any = [...favorites];
+    for (const i in temp) {
       if (temp[i] === targetIdx) deleteFIdx = i;
     }
     temp.splice(deleteFIdx, 1);
@@ -212,7 +212,7 @@ const Exchange = (props: any) => {
   const tbodyData = (type: string) => {
     let keys = Object.keys(currencyList);
     if (type === 'favorites') {
-      let temp: any = [];
+      const temp: any = [];
       for (let i = 0; i < keys.length; i++) {
         for (let k = 0; k < context.favorites.length; k++) {
           if (keys[i] === keys[context.favorites[k]]) temp.push(keys[i]);
