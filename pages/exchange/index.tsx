@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import Image from 'next/image';
 import { UseWindowSize } from './hooks/UseWindowSize';
-// import { FetchWrapperArg } from '../../interface/fetchFactory';
+import { FetchWrapperArg } from '../../interface/fetchFactory';
 import { CallApi } from '../utils/callApi';
 import costComma from '../../helpers/costComma';
 import signPositiveNumber from '../../helpers/signPositiveNumber';
@@ -474,15 +474,15 @@ const Exchange = (props: any) => {
 };
 export default Exchange;
 
-// Exchange.getInitialProps = async (ctx: FetchWrapperArg) => {
-//   const orderCurrency = 'BTC';
-//   const paymentCurrency = 'KRW';
-//   const chartIntervals = '1m';
-//   const data = {
-//     method: 'GET',
-//     url: `https://api.bithumb.com/public/candlestick/${orderCurrency}_${paymentCurrency}/${chartIntervals}`,
-//   };
-//   const res = await fetch(data.url);
-//   const resJson = await res.json();
-//   return { props: resJson };
-// };
+Exchange.getInitialProps = async (ctx: FetchWrapperArg) => {
+  const orderCurrency = 'BTC';
+  const paymentCurrency = 'KRW';
+  const chartIntervals = '1m';
+  const data = {
+    method: 'GET',
+    url: `https://api.bithumb.com/public/candlestick/${orderCurrency}_${paymentCurrency}/${chartIntervals}`,
+  };
+  const res = await fetch(data.url);
+  const resJson = await res.json();
+  return { props: resJson };
+};
