@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import Home from './home';
+import Home from './Home';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
