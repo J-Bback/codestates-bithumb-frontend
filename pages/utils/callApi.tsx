@@ -16,7 +16,7 @@ type Options = {
 };
 
 export const CallApi = async (data: DataProps) => {
-  let options: Options = {
+  const options: Options = {
     // mode: 'no-cors',
     method: data.method,
     header: {

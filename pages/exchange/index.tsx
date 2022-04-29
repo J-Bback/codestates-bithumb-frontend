@@ -81,8 +81,6 @@ const Exchange = (props: any) => {
     router.push({ query: { tab: 'krw' } }, undefined, { shallow: true });
   }, []);
 
-  useEffect(() => {}, [favorites]);
-
   const intervalParser = (time: string) => {
     switch (time) {
       case '1분':

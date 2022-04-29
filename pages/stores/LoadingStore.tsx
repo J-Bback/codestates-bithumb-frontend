@@ -1,22 +1,21 @@
-import { observable, action } from "mobx";
+import { observable, action } from 'mobx';
 
 interface Loading {
-	display: boolean;
+  display: boolean;
 }
 
 export class LoadingStore {
-	@observable display = false;
-	constructor() {}
+  @observable display = false;
 
-	@action on = () => {
-		this.display = true;
-	};
+  @action on = () => {
+    this.display = true;
+  };
 
-	@action off = () => {
-		this.display = false;
-	};
+  @action off = () => {
+    this.display = false;
+  };
 
-	@action loadingState = () => {
-		return this.display;
-	};
+  @action loadingState = () => {
+    return this.display;
+  };
 }
