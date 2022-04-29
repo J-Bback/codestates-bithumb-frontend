@@ -298,7 +298,7 @@ const Home = (props: any) => {
       <Head>
         <title>BITRADER | Cryptocurrency Trading Platform</title>
         <meta name="Bithumb" content="Home" />
-        <link rel="icon" href="/images/candlestick.png" />
+        <link rel="icon" href="/candlestick.png" />
       </Head>
       <Nav setItem={(key: string) => setNavigation(key)} default={'home'} />
       {renderHeaderChart()}
