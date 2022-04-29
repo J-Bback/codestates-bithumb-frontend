@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "public",
+    "public": "pages",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -8,20 +8,9 @@
     ],
     "rewrites": [
       {
-        "source": "**/**",
-        "function": "nextjs-server"
+        "source": "**",
+        "destination": "/index.tsx"
       }
-    ]
-  },
-  "functions": {
-    "source": ".",
-    "runtime": "nodejs16",
-    "ignore": [
-      ".firebase/**",
-      ".firebaserc",
-      "firebase.json",
-      "**/node_modules/**",
-      "**/public/**"
     ]
   }
 }
