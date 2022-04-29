@@ -2,10 +2,10 @@
   "name": "morphai",
   "version": "0.1.0",
   "private": true,
-  "export": "next export",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint"
   },
